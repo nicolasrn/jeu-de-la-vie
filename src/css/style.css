@@ -1,0 +1,14 @@
+table td {
+  width: 15px;
+  height: 15px;
+  border: 1px solid black;
+  color: red;
+}
+
+table td.vie {
+  background-color: black;
+}
+
+pre.console {
+  display: none;
+}
