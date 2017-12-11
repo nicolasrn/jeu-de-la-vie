@@ -1,6 +1,11 @@
 (function () {
+<<<<<<< HEAD
   const iterationMax = -1;
   const timeout = 50;
+=======
+  let iterationMax = -1;
+  let timeout = 50;
+>>>>>>> commit initial du jeu de la vie
   let grille;
   let table;
 
@@ -162,22 +167,24 @@
   }
 
   const app = function () {
-    let idInterval;
-
-    initModeleVue();
-
     let btnPlay = document.querySelector(".game-play");
     let btnStop = document.querySelector(".game-stop");
     let btnLoad = document.querySelector(".game-load");
     let btnReset = document.querySelector("input[type=reset]");
     let btnRandom = document.querySelector(".game-random");
+    let inputInterval = document.querySelector('input[name=interval]');
+    let inputIteration = document.querySelector('input[name=iteration]');
+
+    let idInterval;
+    timeout = inputInterval.value;
 
     btnPlay.addEventListener('click', function (event) {
+      event.preventDefault();
       event.target.disabled = true;
       btnStop.disabled = false;
       idInterval = setInterval(function () {
         let compteur = Number(document.querySelector('#compteur').textContent);
-        if (++compteur === iterationMax) {
+        if (iterationMax <= ++compteur) {
           stopInterval(idInterval);
         }
         document.querySelector('#compteur').textContent = compteur;
@@ -187,12 +194,14 @@
     });
 
     btnStop.addEventListener('click', function (event) {
+      event.preventDefault();
       event.target.disabled = true;
       btnPlay.disabled = false;
       stopInterval(idInterval);
     });
 
     btnLoad.addEventListener('change', function (event) {
+      event.preventDefault();
       let input = event.target;
       let reader = new FileReader();
       reader.onload = function () {
@@ -204,11 +213,13 @@
     });
 
     btnReset.addEventListener('click', function (event) {
+      event.preventDefault();
       document.querySelector('#compteur').textContent = 0;
       initModeleVue();
     });
 
     btnRandom.addEventListener('click', function (event) {
+      event.preventDefault();
       let randEtat = () => ((Math.round(Math.random() * 100)) % 5) > 2 ? 0 : 1;
       let randDimension = () => (Math.round(Math.random() * 100)) % 50;
       let randX = randDimension();
@@ -223,6 +234,18 @@
       }
       initModeleVue(randGrille);
     });
+
+    inputInterval.addEventListener('change', function (event) {
+      event.preventDefault();
+      timeout = Number(event.target.value);
+    });
+
+    inputIteration.addEventListener('change', function (event) {
+      event.preventDefault();
+      iterationMax = Number(event.target.value);
+    });
+
+    initModeleVue();
   };
 
   app();

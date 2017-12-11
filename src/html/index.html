@@ -14,12 +14,24 @@
   <div class="boutons">
     <form action="#">
       <div>
+        <label>temps avant rafraichissement
+          <input type="number" name="interval" id="interval" value="50" />
+        </label>
+      </div>
+
+      <div>
+        <label>itération maximale (-1 pour infini)
+          <input type="number" name="iteration" id="iteration" value="-1" />
+        </label>
+      </div>
+
+      <input type="file" accept='text/json' class="game-load">
+      <div>
         <button class="game-play">play</button>
         <button class="game-stop">stop</button>
         <button class="game-random">random</button>
-        <input type="file" accept='text/json' class="game-load">
+        <input type="reset" value="reinitialiser">
       </div>
-      <input type="reset" value="reinitialiser">
     </form>
   </div>
   <pre class="console"></pre>
