@@ -1,11 +1,6 @@
 (function () {
-<<<<<<< HEAD
-  const iterationMax = -1;
-  const timeout = 50;
-=======
   let iterationMax = -1;
   let timeout = 50;
->>>>>>> commit initial du jeu de la vie
   let grille;
   let table;
 
