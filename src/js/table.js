@@ -1,22 +1,22 @@
-let Table = (function() {
+let Table = (function () {
   function Table(nbLigne, nbColonne) {
     this.nbLigne = nbLigne;
     this.nbColonne = nbColonne;
     this.table = initVue(nbLigne, nbColonne);
   }
 
-  Table.prototype.getCellule = function(cellule) {
+  Table.prototype.getCellule = function (cellule) {
     return this.table.querySelector("td[data-x='" + cellule.x + "'][data-y='" + cellule.y + "']");
   }
-  
-  Table.prototype.getCellules = function(cellule) {
+
+  Table.prototype.getCellules = function (cellule) {
     return this.table.querySelectorAll("td");
   }
-  
-  Table.prototype.getTable = function() {
+
+  Table.prototype.getTable = function () {
     return this.table;
   }
-  
+
   const initVue = function (x, y) {
     let table = document.querySelector('table');
     if (table) {
@@ -41,4 +41,4 @@ let Table = (function() {
   }
 
   return Table;
-}) ();
+})();

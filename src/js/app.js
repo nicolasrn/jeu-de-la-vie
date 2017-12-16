@@ -13,7 +13,7 @@
 
     let grille = new Grille(dimensionX, dimensionY, grilleSimple);
     let table = new Table(dimensionX, dimensionY);
-    grilleVueController = new GrilleVueController(table, grille);
+    grilleVueController = new GrilleVueController(table, grille, document.querySelector('input[name=typeAutomate]:checked').value);
     grilleVueController.dessiner();
 
     let tds = table.getCellules();
@@ -37,6 +37,7 @@
     let btnRandom = document.querySelector(".game-random");
     let inputInterval = document.querySelector('input[name=interval]');
     let inputIteration = document.querySelector('input[name=iteration]');
+    let radiosTypeAutomate = document.querySelectorAll('input[name=typeAutomate]');
 
     let idInterval;
     timeout = inputInterval.value;
@@ -107,6 +108,12 @@
       event.preventDefault();
       iterationMax = Number(event.target.value);
     });
+
+    for (let i = 0; i < radiosTypeAutomate.length; i++) {
+      radiosTypeAutomate[i].addEventListener('change', function (event) {
+        grilleVueController.setAlgoAutomateCellulaire(event.target.value);
+      });
+    }
 
     initModeleVue();
   };
