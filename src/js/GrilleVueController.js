@@ -29,8 +29,8 @@ let GrilleVueController = (function () {
 
   GrilleVueController.prototype.setAlgoAutomateCellulaire = function (name) {
     switch (name) {
-      case "HeighLife":
-        this.algoAutomateCellulaire = new HeighLife(this.grille);
+      case "HighLife":
+        this.algoAutomateCellulaire = new HighLife(this.grille);
         break;
       case "Day&Night":
         this.algoAutomateCellulaire = new DayAndNight(this.grille);
@@ -56,13 +56,7 @@ let GrilleVueController = (function () {
     }
   }
 
-  function AutomateCellulaire() {
-    this.voisineXG = null;
-    this.voisineXD = null;
-    this.voisineYG = null;
-    this.voisineYD = null;
-    this.grille = null;
-  }
+  function AutomateCellulaire() {}
 
   AutomateCellulaire.prototype.getVoisines = function (cellule) {
     let voisines = [];
@@ -121,7 +115,7 @@ let GrilleVueController = (function () {
     this.voisineYD = 1;
     this.grille = grille;
   }
-  JeuDeLaVie.prototype = AutomateCellulaire.prototype;
+  JeuDeLaVie.prototype = new AutomateCellulaire;
 
   JeuDeLaVie.prototype.isNbVoisineVivanteSuffisantePourVivre = function (nbVoisinesVivantes) {
     return nbVoisinesVivantes === 3;
@@ -131,20 +125,20 @@ let GrilleVueController = (function () {
     return nbVoisinesVivantes === 2 || nbVoisinesVivantes === 3;
   }
 
-  function HeighLife(grille) {
+  function HighLife(grille) {
     this.voisineXG = 1;
     this.voisineXD = 1;
     this.voisineYG = 1;
     this.voisineYD = 1;
     this.grille = grille;
   }
-  HeighLife.prototype = AutomateCellulaire.prototype;
+  HighLife.prototype = new AutomateCellulaire;
 
-  HeighLife.prototype.isNbVoisineVivanteSuffisantePourVivre = function (nbVoisinesVivantes) {
+  HighLife.prototype.isNbVoisineVivanteSuffisantePourVivre = function (nbVoisinesVivantes) {
     return nbVoisinesVivantes === 3 || nbVoisinesVivantes === 6;
   }
 
-  HeighLife.prototype.isNbVoisineVivanteInsuffisantePourVivre = function (nbVoisinesVivantes) {
+  HighLife.prototype.isNbVoisineVivanteInsuffisantePourVivre = function (nbVoisinesVivantes) {
     return nbVoisinesVivantes === 2 || nbVoisinesVivantes === 3;
   }
 
@@ -155,7 +149,7 @@ let GrilleVueController = (function () {
     this.voisineYD = 1;
     this.grille = grille;
   }
-  DayAndNight.prototype = AutomateCellulaire.prototype;
+  DayAndNight.prototype = new AutomateCellulaire;
 
   DayAndNight.prototype.isNbVoisineVivanteSuffisantePourVivre = function (nbVoisinesVivantes) {
     return nbVoisinesVivantes === 3 || nbVoisinesVivantes === 6 || nbVoisinesVivantes === 7 || nbVoisinesVivantes === 8;
