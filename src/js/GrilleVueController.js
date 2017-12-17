@@ -56,15 +56,15 @@ let GrilleVueController = (function () {
     }
   }
 
-  function JeuDeLaVie(grille) {
-    this.voisineXG = 1;
-    this.voisineXD = 1;
-    this.voisineYG = 1;
-    this.voisineYD = 1;
-    this.grille = grille;
+  function AutomateCellulaire() {
+    this.voisineXG = null;
+    this.voisineXD = null;
+    this.voisineYG = null;
+    this.voisineYD = null;
+    this.grille = null;
   }
 
-  JeuDeLaVie.prototype.getVoisines = function (cellule) {
+  AutomateCellulaire.prototype.getVoisines = function (cellule) {
     let voisines = [];
     let x = cellule.x;
     let y = cellule.y;
@@ -82,23 +82,23 @@ let GrilleVueController = (function () {
     return voisines;
   };
 
-  JeuDeLaVie.prototype.getCellulesVoisinesVivantes = function (cellule) {
+  AutomateCellulaire.prototype.getCellulesVoisinesVivantes = function (cellule) {
     return this.getVoisines(cellule).filter(function (celluleVoisine, index, array) {
       return celluleVoisine.etat === Etat.EN_VIE;
     });
   };
 
-  JeuDeLaVie.prototype.determinerEtat = function (cellule) {
+  AutomateCellulaire.prototype.determinerEtat = function (cellule) {
     let cellules = [];
     if (cellule.etat === Etat.MORT) {
       let nbVoisinesVivantes = this.getCellulesVoisinesVivantes(cellule).length;
-      if (nbVoisinesVivantes === 3) {
+      if (this.isNbVoisineVivanteSuffisantePourVivre(nbVoisinesVivantes)) {
         cellule.etatSuivant = Etat.EN_VIE;
         cellules.push(cellule);
       }
     } else if (cellule.etat === Etat.EN_VIE) {
       let nbVoisinesVivantes = this.getCellulesVoisinesVivantes(cellule).length;
-      if (!(nbVoisinesVivantes === 2 || nbVoisinesVivantes === 3)) {
+      if (!(this.isNbVoisineVivanteInsuffisantePourVivre(nbVoisinesVivantes))) {
         cellule.etatSuivant = Etat.MORT;
         cellules.push(cellule);
       }
@@ -106,6 +106,30 @@ let GrilleVueController = (function () {
     return cellules;
   }
 
+  AutomateCellulaire.prototype.isNbVoisineVivanteSuffisantePourVivre = function (nbVoisineVivante) {
+    throw new Error("fonction non surchargée");
+  }
+
+  AutomateCellulaire.prototype.isNbVoisineVivanteInsuffisantePourVivre = function (nbVoisineVivante) {
+    throw new Error("fonction non surchargée");
+  }
+
+  function JeuDeLaVie(grille) {
+    this.voisineXG = 1;
+    this.voisineXD = 1;
+    this.voisineYG = 1;
+    this.voisineYD = 1;
+    this.grille = grille;
+  }
+  JeuDeLaVie.prototype = AutomateCellulaire.prototype;
+
+  JeuDeLaVie.prototype.isNbVoisineVivanteSuffisantePourVivre = function (nbVoisinesVivantes) {
+    return nbVoisinesVivantes === 3;
+  }
+
+  JeuDeLaVie.prototype.isNbVoisineVivanteInsuffisantePourVivre = function (nbVoisinesVivantes) {
+    return nbVoisinesVivantes === 2 || nbVoisinesVivantes === 3;
+  }
 
   function HeighLife(grille) {
     this.voisineXG = 1;
@@ -114,49 +138,16 @@ let GrilleVueController = (function () {
     this.voisineYD = 1;
     this.grille = grille;
   }
+  HeighLife.prototype = AutomateCellulaire.prototype;
 
-  HeighLife.prototype.getVoisines = function (cellule) {
-    let voisines = [];
-    let x = cellule.x;
-    let y = cellule.y;
-    for (let i = x - this.voisineXG; i <= x + this.voisineXD; i++) {
-      if (i >= 0 && i < this.grille.nbLigne) {
-        for (let j = y - this.voisineYG; j <= y + this.voisineYD; j++) {
-          if (j >= 0 && j < this.grille.nbColonne) {
-            if (this.grille.get(i, j) !== this.grille.get(x, y)) {
-              voisines.push(this.grille.get(i, j));
-            }
-          }
-        }
-      }
-    }
-    return voisines;
-  };
-
-  HeighLife.prototype.getCellulesVoisinesVivantes = function (cellule) {
-    return this.getVoisines(cellule).filter(function (celluleVoisine, index, array) {
-      return celluleVoisine.etat === Etat.EN_VIE;
-    });
-  };
-
-  HeighLife.prototype.determinerEtat = function (cellule) {
-    let cellules = [];
-    if (cellule.etat === Etat.MORT) {
-      let nbVoisinesVivantes = this.getCellulesVoisinesVivantes(cellule).length;
-      if (nbVoisinesVivantes === 3 || nbVoisinesVivantes === 6) {
-        cellule.etatSuivant = Etat.EN_VIE;
-        cellules.push(cellule);
-      }
-    } else if (cellule.etat === Etat.EN_VIE) {
-      let nbVoisinesVivantes = this.getCellulesVoisinesVivantes(cellule).length;
-      if (!(nbVoisinesVivantes === 2 || nbVoisinesVivantes === 3)) {
-        cellule.etatSuivant = Etat.MORT;
-        cellules.push(cellule);
-      }
-    }
-    return cellules;
+  HeighLife.prototype.isNbVoisineVivanteSuffisantePourVivre = function (nbVoisinesVivantes) {
+    return nbVoisinesVivantes === 3 || nbVoisinesVivantes === 6;
   }
-  
+
+  HeighLife.prototype.isNbVoisineVivanteInsuffisantePourVivre = function (nbVoisinesVivantes) {
+    return nbVoisinesVivantes === 2 || nbVoisinesVivantes === 3;
+  }
+
   function DayAndNight(grille) {
     this.voisineXG = 1;
     this.voisineXD = 1;
@@ -164,47 +155,15 @@ let GrilleVueController = (function () {
     this.voisineYD = 1;
     this.grille = grille;
   }
+  DayAndNight.prototype = AutomateCellulaire.prototype;
 
-  DayAndNight.prototype.getVoisines = function (cellule) {
-    let voisines = [];
-    let x = cellule.x;
-    let y = cellule.y;
-    for (let i = x - this.voisineXG; i <= x + this.voisineXD; i++) {
-      if (i >= 0 && i < this.grille.nbLigne) {
-        for (let j = y - this.voisineYG; j <= y + this.voisineYD; j++) {
-          if (j >= 0 && j < this.grille.nbColonne) {
-            if (this.grille.get(i, j) !== this.grille.get(x, y)) {
-              voisines.push(this.grille.get(i, j));
-            }
-          }
-        }
-      }
-    }
-    return voisines;
-  };
-
-  DayAndNight.prototype.getCellulesVoisinesVivantes = function (cellule) {
-    return this.getVoisines(cellule).filter(function (celluleVoisine, index, array) {
-      return celluleVoisine.etat === Etat.EN_VIE;
-    });
-  };
-
-  DayAndNight.prototype.determinerEtat = function (cellule) {
-    let cellules = [];
-    if (cellule.etat === Etat.MORT) {
-      let nbVoisinesVivantes = this.getCellulesVoisinesVivantes(cellule).length;
-      if (nbVoisinesVivantes === 3 || nbVoisinesVivantes === 6 || nbVoisinesVivantes === 7 || nbVoisinesVivantes === 8) {
-        cellule.etatSuivant = Etat.EN_VIE;
-        cellules.push(cellule);
-      }
-    } else if (cellule.etat === Etat.EN_VIE) {
-      let nbVoisinesVivantes = this.getCellulesVoisinesVivantes(cellule).length;
-      if (!(nbVoisinesVivantes === 3 || nbVoisinesVivantes === 4 || nbVoisinesVivantes === 6 || nbVoisinesVivantes === 7 || nbVoisinesVivantes === 8)) {
-        cellule.etatSuivant = Etat.MORT;
-        cellules.push(cellule);
-      }
-    }
-    return cellules;
+  DayAndNight.prototype.isNbVoisineVivanteSuffisantePourVivre = function (nbVoisinesVivantes) {
+    return nbVoisinesVivantes === 3 || nbVoisinesVivantes === 6 || nbVoisinesVivantes === 7 || nbVoisinesVivantes === 8;
   }
+
+  DayAndNight.prototype.isNbVoisineVivanteInsuffisantePourVivre = function (nbVoisinesVivantes) {
+    return nbVoisinesVivantes === 3 || nbVoisinesVivantes === 4 || nbVoisinesVivantes === 6 || nbVoisinesVivantes === 7 || nbVoisinesVivantes === 8;
+  }
+
   return GrilleVueController;
 })();
